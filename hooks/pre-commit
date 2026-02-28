@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "🔍 Running AI-Gitleak-Agent..."
+
+python main.py
+
+if [ $? -ne 0 ]; then
+    echo "❌ Commit blocked due to security policy."
+    exit 1
+fi
+
+echo "✅ Commit allowed."
+exit 0

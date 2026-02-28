@@ -1,0 +1,16 @@
+# AI-Gitleak-Agent configuration
+# All values here can be overridden with environment variables.
+
+logging:
+  level: INFO           # DEBUG | INFO | WARNING | ERROR
+
+scan:
+  source: "."           # Root path to scan (relative to project root)
+  report_path: "reports/report.json"
+  config_path: "config/gitleaks.toml"
+
+ai:
+  # Set ANTHROPIC_API_KEY env var to enable AI-powered explanations.
+  # If not set, high-quality static explanations are used instead.
+  model: "claude-3-5-haiku-20241022"
+  max_tokens: 512

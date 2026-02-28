@@ -1,0 +1,59 @@
+name: Security Scan
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    name: Gitleaks + AI Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout full history so gitleaks can scan all commits ──────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # full history is required by gitleaks
+
+      # ── 2. Install gitleaks via the official action ────────────────────────
+      - name: Install Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Set GITLEAKS_ENABLE_COMMENTS=false to disable PR comments if desired
+        continue-on-error: true   # let our Python agent handle the exit code
+
+      # ── 3. Set up Python ──────────────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # ── 4. Install Python dependencies ────────────────────────────────────
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── 5. Run the AI agent for enriched output ───────────────────────────
+      - name: Run AI-Gitleak-Agent
+        env:
+          # Add ANTHROPIC_API_KEY as a repository secret to enable AI explanations
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python main.py
+
+      # ── 6. Upload the report as a build artefact (always, even on failure) ─
+      - name: Upload scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: |
+            reports/report.json
+            logs/
+          retention-days: 30
