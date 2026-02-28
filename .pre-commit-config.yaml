@@ -1,5 +1,8 @@
 repos:
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.0
+  - repo: local
     hooks:
       - id: gitleaks
+        name: Detect hardcoded secrets
+        entry: gitleaks protect --staged --verbose
+        language: system
+        pass_filenames: false
