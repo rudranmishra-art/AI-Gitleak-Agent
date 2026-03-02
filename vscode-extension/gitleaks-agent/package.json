@@ -1,0 +1,92 @@
+{
+  "name": "gitleaks-agent",
+  "displayName": "AI Gitleaks Agent",
+  "description": "Real-time secret detection using Gitleaks with AI-powered explanations",
+  "version": "1.0.0",
+  "publisher": "RudraMishra",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Linters", "Other"],
+  "icon": "icon.png",
+  "keywords": ["security", "secrets", "gitleaks", "credentials", "devSecOps"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gitleaksAgent.scanNow",
+        "title": "🔍 Scan for Secrets Now",
+        "category": "Gitleaks Agent"
+      },
+      {
+        "command": "gitleaksAgent.scanStaged",
+        "title": "🔍 Scan Staged Files",
+        "category": "Gitleaks Agent"
+      },
+      {
+        "command": "gitleaksAgent.runSetup",
+        "title": "⚙️ Run Setup (Install Pre-commit Hook)",
+        "category": "Gitleaks Agent"
+      }
+    ],
+    "configuration": {
+      "title": "AI Gitleaks Agent",
+      "properties": {
+        "gitleaksAgent.gitleaksPath": {
+          "type": "string",
+          "default": "gitleaks",
+          "description": "Path to the gitleaks binary (default: uses PATH)"
+        },
+        "gitleaksAgent.configPath": {
+          "type": "string",
+          "default": "config/gitleaks.toml",
+          "description": "Path to gitleaks config file relative to workspace root"
+        },
+        "gitleaksAgent.anthropicApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Anthropic API key for AI-powered explanations (optional)"
+        },
+        "gitleaksAgent.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically scan staged files when a file is saved"
+        },
+        "gitleaksAgent.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show scan status in the status bar"
+        }
+      }
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "gitleaksAgent.scanNow",
+          "group": "security"
+        }
+      ],
+      "scm/title": [
+        {
+          "command": "gitleaksAgent.scanStaged",
+          "group": "security"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "gitleaksAgent.scanNow",
+        "key": "ctrl+shift+g s",
+        "mac": "cmd+shift+g s"
+      }
+    ]
+  },
+  "scripts": {
+    "package": "vsce package",
+    "install-local": "code --install-extension gitleaks-agent-1.0.0.vsix"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^2.22.0"
+  }
+}

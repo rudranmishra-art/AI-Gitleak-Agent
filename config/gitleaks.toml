@@ -2,3 +2,16 @@ title = "AI-Gitleak-Agent Custom Rules"
 
 [extend]
 useDefault = true
+
+[[rules]]
+id          = "generic-password"
+description = "Generic password assignment"
+regex       = '''(?i)(password|passwd|pwd)\s*[=:]\s*['""]?([^\s'"",]{4,})['""]?'''
+secretGroup = 2
+tags        = ["generic", "password"]
+
+[allowlist]
+description = "Ignore obvious placeholders"
+regexes = [
+  '''(?i)(changeme|placeholder|example|dummy|test|your[_-]?secret)''',
+]
